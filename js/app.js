@@ -2,6 +2,8 @@
 
 /*
  * Create a list that holds all the cards
+ * Double the set of cards for memory game
+ * declare starting variables
  */
 const baseSet = ['fa-anchor',
                   'fa-bicycle',
@@ -11,9 +13,7 @@ const baseSet = ['fa-anchor',
                   'fa-diamond',
                   'fa-leaf',
                   'fa-paper-plane-o'];
-/**
- * Cards need to be doubled - this is memory!
- */
+
 const allCards = [...baseSet, ...baseSet];
 
 
@@ -29,11 +29,24 @@ let deltaTime = 0;
 let lastCard = '';
 let match = false;
 
+/**
+ * Start event listener for restartIcon
+ * Shuffle the cards
+ * Set up the board and display it
+ * Start the timer
+ */
 
+restartListener();
+shuffle(allCards);
+displayCards();
+let timerStart = new Date();
+
+// Increment a counter for moves the player took
 function moveCounter() {
   move++;
 }
 
+// Render the move counter as textContent
 function renderMoveCounter() {
   movesDisplay.textContent = move;
 }
@@ -53,6 +66,7 @@ function shuffle(array) {
     return array;
 }
 
+// Create all the cards and append them as children of the gameboard
 function displayCards () {
     for (card of allCards) {
         const card = document.createElement('li');
@@ -67,19 +81,7 @@ function displayCards () {
     }
 }
 
-/**
- * This section is setting up the board
- */
-
-restartIcon = document.querySelector('#restart');
-restartIcon.addEventListener('click', restart);
-shuffle(allCards);
-displayCards();
-let timerStart = new Date();
-const cards = document.querySelectorAll('.card');
-
-
-
+// This is the main game loop
 function cardClicked() {
     card = this;
     showCard(card);
@@ -96,6 +98,7 @@ function cardClicked() {
     checkWinCondition();
 }
 
+// If all cards are matched, the game ends with calculating the time the player took and displays a scoreboard.
 function checkWinCondition() {
   if (lockedCards.length === 8){
     calculateDeltaTime();
@@ -103,14 +106,17 @@ function checkWinCondition() {
   }
 }
 
+// General purpose delay function
 function delayStep(func, time) {
   timeoutID = window.setTimeout(func, time);
 }
 
+// Lock matched cards by pushing the openCards
 function lockCards() {
     lockedCards.push(openCards);
 }
 
+// Find out if the two picked cards match
 function matchCards() {
   //To find if a value or element exists in an array
   if (openCards[0] === openCards[1] && card !== lastCard) {
@@ -122,6 +128,14 @@ function matchCards() {
   }
 }
 
+/**
+ * isMatch triggers when a match is found, and ...
+ * - adds a 'match' class to the cards
+ * - pushes them to the lockCards array
+ * - removes them from the openCards list
+ * - removes the event listeners, so they are not clickable anymore
+ * - updates the moves and rating trackers
+ */
 function isMatch() {
   console.log('Match!');
   lastCard.classList.add('match');
@@ -136,7 +150,13 @@ function isMatch() {
   updateRating();
 }
 
-function isNotMatch() {
+/**
+ * isNotMatch triggers when a match is NOT found, and ...
+ * - removes the cards from the openCards list
+ * - hides the cards again
+ * - updates the moves and rating trackers
+ */
+ function isNotMatch() {
   console.log('No Match!');
   removeOpenCards(lastCard);
   removeOpenCards(card);
@@ -147,66 +167,79 @@ function isNotMatch() {
   updateRating();
 }
 
+/**
+ * This section handles card behaviour
+ */
+
+// adds the open cards to an array
 function addOpenCards(card) {
   openCards.push(card);
 }
 
+// clears the open cards array
 function removeOpenCards(card) {
   openCards = [];
 }
 
+// hides a card from view and makes it clickable
 function hideCard(card) {
   card.classList.remove('open', 'show');
   lastCard.classList.remove('open', 'show');
   card.addEventListener('click', cardClicked);
 }
 
-
+// reveals a card and makes it unclickable
 function showCard(card) {
   card.classList.add('open', 'show');
   card.removeEventListener('click', cardClicked);
 }
 
+// calculates the time between start and end of the game
 function calculateDeltaTime() {
     let timerStop = new Date() - timerStart;
     deltaTime = timerStop/1000;
     return deltaTime;
 }
 
+// updates the star rating, depending on how many moves the player took
 function updateRating() {
-  if (move < 5) {
+  if (move < 10) {
     rating = 3;
     ratingDisplay.innerHTML = '<li><i class="fa fa-star"></i></li><li><i class="fa fa-star"></i></li><li><i class="fa fa-star"></i></li>';
   }
-  else if (move < 10) {
+  else if (move < 20) {
     rating = 2;
     ratingDisplay.innerHTML = '<li><i class="fa fa-star"></i></li><li><i class="fa fa-star"></i></li>';
   }
-  else if (move < 20) {
+  else if (move < 30) {
     rating = 1;
     ratingDisplay.innerHTML = '<li><i class="fa fa-star"></i></li>';
   }
-  else if (move >= 20) {
+  else if (move >= 30) {
     rating = 0;
     ratingDisplay.innerHTML = '';
   }
 }
 
+// reset the rating when game is restarted
 function resetRating() {
   rating = 3;
   ratingDisplay.innerHTML = '<li><i class="fa fa-star"></i></li><li><i class="fa fa-star"></i></li><li><i class="fa fa-star"></i></li>';
 }
 
+// shows a simple modal, displaying moves, time and rating of a player
 function showScoreboard() {
-  if (window.confirm('You have won! Moves needed: ' + move + '. Time to clear board: ' + deltaTime + ' seconds.')) {
+  if (window.confirm('You have won! Moves needed: ' + move + '. Time to clear board: ' + deltaTime + ' seconds. We think, you should be awarded ' +  rating + ' stars. Click OK to restart the game!')) {
   restart();
-}
+  }
 }
 
+// clears the game board on game restart
 function clearGameboard() {
   gameboard.innerHTML = '';
 }
 
+// main restart function, resetting the variables and calling the functions to create a new game
 function restart() {
   counter = 0;
   openCards = [];
@@ -222,4 +255,10 @@ function restart() {
   shuffle(allCards);
   displayCards();
   timerStart = new Date();
+}
+
+// starts an event listener for the game restart graphic
+function restartListener() {
+  restartIcon = document.querySelector('#restart');
+  restartIcon.addEventListener('click', restart);
 }
