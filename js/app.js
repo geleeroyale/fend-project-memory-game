@@ -211,13 +211,9 @@ function updateRating() {
     rating = 2;
     ratingDisplay.innerHTML = '<li><i class="fa fa-star"></i></li><li><i class="fa fa-star"></i></li>';
   }
-  else if (move < 30) {
+  else if (move >= 30) {
     rating = 1;
     ratingDisplay.innerHTML = '<li><i class="fa fa-star"></i></li>';
-  }
-  else if (move >= 30) {
-    rating = 0;
-    ratingDisplay.innerHTML = '';
   }
 }
 
