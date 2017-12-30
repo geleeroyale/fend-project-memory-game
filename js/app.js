@@ -29,6 +29,7 @@ let deltaTime = 0;
 let lastCard = '';
 let match = false;
 
+
 /**
  * Start event listener for restartIcon
  * Shuffle the cards
@@ -39,6 +40,7 @@ let match = false;
 restartListener();
 shuffle(allCards);
 displayCards();
+setTimer();
 let timerStart = new Date();
 
 // Increment a counter for moves the player took
@@ -103,6 +105,7 @@ function checkWinCondition() {
   if (lockedCards.length === 8){
     calculateDeltaTime();
     delayStep(200, showScoreboard());
+    clearInterval(timer);
   }
 }
 
@@ -201,6 +204,28 @@ function calculateDeltaTime() {
     return deltaTime;
 }
 
+// general purpose timer for display (less accurate and only for display)
+let sec = 0;
+
+function pad(val) {
+    return val > 9 ? val : "0" + val;
+}
+
+function setTimer() {
+let timer = setInterval(function () {
+    document.getElementById("seconds").innerHTML = pad(++sec % 60);
+    document.getElementById("minutes").innerHTML = pad(parseInt(sec / 60, 10));
+}, 1000);
+return timer;
+}
+
+// reset the timer display on restart
+function clearTimer() {
+    sec = 0;
+    return sec;
+}
+
+
 // updates the star rating, depending on how many moves the player took
 function updateRating() {
   if (move < 10) {
@@ -245,6 +270,7 @@ function restart() {
   lastCard = '';
   match = false;
 
+  clearTimer();
   resetRating();
   clearGameboard();
   renderMoveCounter();
