@@ -1,4 +1,11 @@
-# Memory Game Project
+# A Memory
+Behold - Fun for the whole family!
+
+## Where to play?
+
+Game is LIVE!
+
+Visit the: [website](https://geleeroyale.github.io/fend-project-memory-game/)
 
 ## Table of Contents
 
