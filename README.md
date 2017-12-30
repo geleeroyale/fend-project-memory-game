@@ -7,11 +7,6 @@ Game is LIVE!
 
 Visit the: [website](https://geleeroyale.github.io/fend-project-memory-game/)
 
-## Table of Contents
-
-* [Instructions](#instructions)
-* [Contributing](#contributing)
-
 ## Instructions
 
 The goal is to match all the cards!
