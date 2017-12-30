@@ -29,7 +29,7 @@ let rating = 3;
 let deltaTime = 0;
 let lastCard = '';
 let match = false;
-let timerStart = new Date();
+
 
 
 /**
@@ -53,6 +53,7 @@ function startTimer() {
   else if (firstMove === true && restarted === true) {
     clearTimer();
     startInterval();
+    timerStart = new Date();
     firstMove = false;
   }
 }
@@ -226,10 +227,10 @@ function pad(val) {
 }
 
 function startInterval() {
-timer = setInterval(function () {
+  timer = setInterval(function () {
     document.getElementById("seconds").innerHTML = pad(++sec % 60);
     document.getElementById("minutes").innerHTML = pad(parseInt(sec / 60, 10));
-}, 1000);
+  }, 1000);
 }
 
 // reset the timer display on restart
