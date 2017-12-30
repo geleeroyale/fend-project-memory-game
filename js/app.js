@@ -227,7 +227,7 @@ function pad(val) {
 }
 
 function startInterval() {
-  timer = setInterval(function () {
+  return timer = setInterval(function () {
     document.getElementById("seconds").innerHTML = pad(++sec % 60);
     document.getElementById("minutes").innerHTML = pad(parseInt(sec / 60, 10));
   }, 1000);
@@ -235,6 +235,7 @@ function startInterval() {
 
 // reset the timer display on restart
 function clearTimer() {
+    clearInterval(timer);
     sec = 0;
     minutes.innerHTML = '00';
     seconds.innerHTML = '00';
@@ -286,7 +287,6 @@ function restart() {
   deltaTime = 0;
   lastCard = '';
   match = false;
-  clearInterval(timer);
   clearTimer();
   resetRating();
   clearGameboard();
