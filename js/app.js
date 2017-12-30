@@ -105,7 +105,6 @@ function checkWinCondition() {
   if (lockedCards.length === 8){
     calculateDeltaTime();
     delayStep(200, showScoreboard());
-    clearInterval(timer);
   }
 }
 
