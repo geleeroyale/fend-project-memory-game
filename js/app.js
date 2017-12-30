@@ -16,7 +16,8 @@ const baseSet = ['fa-anchor',
 
 const allCards = [...baseSet, ...baseSet];
 
-
+let firstMove = true;
+let restarted = false;
 let counter = 0;
 let openCards = [];
 let lockedCards = [];
@@ -28,6 +29,7 @@ let rating = 3;
 let deltaTime = 0;
 let lastCard = '';
 let match = false;
+let timerStart = new Date();
 
 
 /**
@@ -40,8 +42,20 @@ let match = false;
 restartListener();
 shuffle(allCards);
 displayCards();
-setTimer();
-let timerStart = new Date();
+
+// Checks if first round and starts timer
+function startTimer() {
+  if (firstMove === true && restarted === false) {
+    startInterval();
+    timerStart = new Date();
+    firstMove = false;
+  }
+  else if (firstMove === true && restarted === true) {
+    clearTimer();
+    startInterval();
+    firstMove = false;
+  }
+}
 
 // Increment a counter for moves the player took
 function moveCounter() {
@@ -87,6 +101,7 @@ function displayCards () {
 function cardClicked() {
     card = this;
     showCard(card);
+    startTimer();
     addOpenCards(card.innerHTML);
     if (openCards.length === 2) {
       matchCards(card);
@@ -210,18 +225,18 @@ function pad(val) {
     return val > 9 ? val : "0" + val;
 }
 
-function setTimer() {
-let timer = setInterval(function () {
+function startInterval() {
+timer = setInterval(function () {
     document.getElementById("seconds").innerHTML = pad(++sec % 60);
     document.getElementById("minutes").innerHTML = pad(parseInt(sec / 60, 10));
 }, 1000);
-return timer;
 }
 
 // reset the timer display on restart
 function clearTimer() {
     sec = 0;
-    return sec;
+    minutes.innerHTML = '00';
+    seconds.innerHTML = '00';
 }
 
 
@@ -261,6 +276,8 @@ function clearGameboard() {
 
 // main restart function, resetting the variables and calling the functions to create a new game
 function restart() {
+  restarted = true;
+  firstMove = true;
   counter = 0;
   openCards = [];
   lockedCards = [];
@@ -268,14 +285,13 @@ function restart() {
   deltaTime = 0;
   lastCard = '';
   match = false;
-
+  clearInterval(timer);
   clearTimer();
   resetRating();
   clearGameboard();
   renderMoveCounter();
   shuffle(allCards);
   displayCards();
-  timerStart = new Date();
 }
 
 // starts an event listener for the game restart graphic
